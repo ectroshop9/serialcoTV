@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'accounts',
     'content',
     'serials',
-    'store',
 ]
 
 MIDDLEWARE = [
