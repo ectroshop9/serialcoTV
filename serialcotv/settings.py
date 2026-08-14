@@ -75,6 +75,7 @@ DATABASES = {
         default=config('DATABASE_URL', default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
         conn_max_age=600,
         conn_health_checks=True,
+        ssl_require=True  # <-- هذا السطر هو الذي سيجبر الاتصال بالنجاح
     )
 }
 
@@ -155,6 +156,3 @@ LOGGING = {
         'serials': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
     },
 }
-# Supabase API
-SUPABASE_URL = config('SUPABASE_URL', default='https://hzjbetdprzzpbfcppgzq.supabase.co')
-SUPABASE_ANON_KEY = config('SUPABASE_ANON_KEY', default='sb_publishable_fQ9kwsBx2RbnGz0ScFoRhw_rqI5sLtN')
