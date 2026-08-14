@@ -155,3 +155,6 @@ LOGGING = {
         'serials': {'handlers': ['console'], 'level': 'INFO', 'propagate': False},
     },
 }
+# Supabase API
+SUPABASE_URL = config('SUPABASE_URL', default='https://hzjbetdprzzpbfcppgzq.supabase.co')
+SUPABASE_ANON_KEY = config('SUPABASE_ANON_KEY', default='sb_publishable_fQ9kwsBx2RbnGz0ScFoRhw_rqI5sLtN')
