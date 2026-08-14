@@ -69,12 +69,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'serialcotv.wsgi.application'
 
+# استخدام Supabase Postgres
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL', default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('SUPABASE_DB_NAME', default='postgres'),
+        'USER': config('SUPABASE_DB_USER', default='postgres'),
+        'PASSWORD': config('SUPABASE_DB_PASSWORD', default=''),
+        'HOST': config('SUPABASE_DB_HOST', default='db.supabase.co'),
+        'PORT': config('SUPABASE_DB_PORT', default='5432'),
+    }
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -105,10 +109,6 @@ CLOUDINARY_STORAGE = {
     'API_KEY': config('CLOUDINARY_API_KEY', default=''),
     'API_SECRET': config('CLOUDINARY_API_SECRET', default=''),
 }
-
-IMAGEKIT_PUBLIC_KEY = config('IMAGEKIT_PUBLIC_KEY', default='')
-IMAGEKIT_PRIVATE_KEY = config('IMAGEKIT_PRIVATE_KEY', default='')
-IMAGEKIT_URL_ENDPOINT = config('IMAGEKIT_URL_ENDPOINT', default='')
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
@@ -143,20 +143,9 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp-relay.brevo.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_TIMEOUT = 10
-EMAIL_HOST_USER = 'b3440f001@smtp-brevo.com'
-EMAIL_HOST_PASSWORD = config('BREVO_API_KEY', default='')
-DEFAULT_FROM_EMAIL = 'SerialCo TV <ectroshop9@gmail.com>'
-
 CHARGILY_SECRET_KEY = config('CHARGILY_SECRET_KEY', default='')
 CHARGILY_PUBLIC_KEY = config('CHARGILY_PUBLIC_KEY', default='')
 CHARGILY_APP_SECRET = config('CHARGILY_APP_SECRET', default='')
-
-GOOGLE_SHEET_URL = config('GOOGLE_SHEET_URL', default='')
 
 LOGGING = {
     'version': 1,
