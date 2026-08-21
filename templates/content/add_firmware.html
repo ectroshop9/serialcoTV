@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إضافة سوفتوير - SerialCoTV</title>
+  <style>
+    body { font-family: 'Cairo', sans-serif; background: #f1f5f9; direction: rtl; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; }
+    input, select, textarea { width: 100%; padding: 12px; margin-bottom: 12px; border: 1px solid #cbd5e1; border-radius: 10px; box-sizing: border-box; font-size: 14px; }
+    button { background: #4f46e5; color: #fff; padding: 12px 24px; border: none; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 700; }
+    .btn-dz { background: #3b82f6; margin-bottom: 20px; }
+    #dzProducts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    #dzProducts button { background: #10b981; padding: 8px 14px; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>إضافة سوفتوير جديد</h2>
+    
+    <button class="btn-dz" onclick="loadDzProducts()">📥 استدعاء من DZBoard</button>
+    
+    <div id="dzProducts"></div>
+    
+    <form id="firmwareForm" onsubmit="saveFirmware(event)">
+      <select id="brand_id" required>
+        <option value="">اختر الماركة...</option>
+      </select>
+      <input type="text" id="model_number" placeholder="الموديل *" required>
+      <input type="text" id="version" placeholder="الإصدار">
+      <input type="url" id="file_url" placeholder="رابط الملف">
+      <input type="number" id="token_cost" placeholder="تكلفة التوكنز" value="500">
+      <textarea id="description" placeholder="الوصف" rows="3"></textarea>
+      <button type="submit">💾 حفظ السوفتوير</button>
+    </form>
+    
+    <div id="result"></div>
+  </div>
+
+  <script>
+    // جلب الماركات
+    async function loadBrands() {
+      const res = await fetch('/api/content/brands/');
+      const data = await res.json();
+      const select = document.getElementById('brand_id');
+      data.brands.forEach(b => {
+        const opt = document.createElement('option');
+        opt.value = b.id;
+        opt.textContent = b.name;
+        select.appendChild(opt);
+      });
+    }
+    
+    // جلب منتجات DZBoard
+    async function loadDzProducts() {
+      const res = await fetch('https://dzboard.onrender.com/api/products');
+      const data = await res.json();
+      const products = data.products || [];
+      document.getElementById('dzProducts').innerHTML = products.slice(0, 30).map(p => 
+        `<button onclick='fillForm(${JSON.stringify(p)})'>${p.name}</button>`
+      ).join('');
+    }
+    
+    // ملء النموذج من منتج DZBoard
+    function fillForm(p) {
+      document.getElementById('model_number').value = p.name || '';
+      document.getElementById('description').value = p.description || '';
+      document.getElementById('result').innerHTML = '<p style="color:#10b981">✅ تم استدعاء المنتج</p>';
+    }
+    
+    // حفظ السوفتوير
+    async function saveFirmware(e) {
+      e.preventDefault();
+      const data = {
+        brand_id: document.getElementById('brand_id').value,
+        model_number: document.getElementById('model_number').value,
+        version: document.getElementById('version').value,
+        file_url: document.getElementById('file_url').value,
+        token_cost: document.getElementById('token_cost').value,
+        description: document.getElementById('description').value,
+      };
+      
+      const res = await fetch('/api/content/firmware/create/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      
+      if (result.success) {
+        document.getElementById('result').innerHTML = '<p style="color:#10b981">✅ تم الحفظ بنجاح!</p>';
+        e.target.reset();
+      } else {
+        document.getElementById('result').innerHTML = `<p style="color:#ef4444">❌ ${result.message}</p>`;
+      }
+    }
+    
+    loadBrands();
+  </script>
+</body>
+</html>

@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -104,7 +105,7 @@ class SchematicDetailAPI(APIView):
         
         serial_number = request.query_params.get('serial_number')
         pin = request.query_params.get('pin')
-        
+        f
         if not serial_number or not pin:
             return Response({'success': False, 'message': 'يرجى إدخال السيريال والبين'}, status=400)
         
@@ -156,3 +157,56 @@ class DownloadFileAPI(APIView):
         download_token.save()
         
         return HttpResponseRedirect(download_token.file_url)
+from django.shortcuts import render
+
+def add_firmware_page(request):
+    return render(request, 'content/add_firmware.html')
+
+class FirmwareCreateAPI(APIView):
+    def post(self, request):
+        brand_id = request.data.get('brand_id')
+        model_number = request.data.get('model_number')
+        version = request.data.get('version', '')
+        file_url = request.data.get('file_url', '')
+        token_cost = request.data.get('token_cost', 500)
+        description = request.data.get('description', '')
+        
+        if not brand_id or not model_number:
+            return Response({'success': False, 'message': 'الماركة والموديل مطلوبان'}, status=400)
+        
+        firmware = Firmware.objects.create(
+            brand_id=brand_id,
+            model_number=model_number,
+            version=version,
+            file_url=file_url,
+            token_cost=int(token_cost),
+            description=description,
+        )
+        
+        return Response({'success': True, 'message': 'تمت الإضافة بنجاح', 'id': firmware.id})
+
+def add_firmware_page(request):
+    return render(request, 'content/add_firmware.html')
+
+class FirmwareCreateAPI(APIView):
+    def post(self, request):
+        brand_id = request.data.get('brand_id')
+        model_number = request.data.get('model_number')
+        version = request.data.get('version', '')
+        file_url = request.data.get('file_url', '')
+        token_cost = request.data.get('token_cost', 500)
+        description = request.data.get('description', '')
+        
+        if not brand_id or not model_number:
+            return Response({'success': False, 'message': 'الماركة والموديل مطلوبان'}, status=400)
+        
+        firmware = Firmware.objects.create(
+            brand_id=brand_id,
+            model_number=model_number,
+            version=version,
+            file_url=file_url,
+            token_cost=int(token_cost),
+            description=description,
+        )
+        
+        return Response({'success': True, 'message': 'تمت الإضافة بنجاح', 'id': firmware.id})

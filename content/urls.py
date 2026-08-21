@@ -15,4 +15,9 @@ urlpatterns = [
     
     # Download (محمي بتوكن)
     path('download/<str:token>/', views.DownloadFileAPI.as_view(), name='download-file'),
+    path("add-firmware/", views.add_firmware_page, name="add-firmware"),
+    path("firmware/create/", views.FirmwareCreateAPI.as_view(), name="firmware-create"),
 ]
+# إضافة سوفتوير (صفحة HTML)
+path('add-firmware/', views.add_firmware_page, name='add-firmware'),
+path('add-firmware/api/', views.FirmwareCreateAPI.as_view(), name='firmware-create'),
